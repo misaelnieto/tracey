@@ -126,6 +126,7 @@ class Workspace(Gtk.Box):
 
 class TraceyAppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
+        data_file = 'data_file' in kwargs and kwargs.pop('data_file') or None
         super().__init__(*args, **kwargs)
 
         # Setup logo, title and size
@@ -166,6 +167,8 @@ class TraceyAppWindow(Gtk.ApplicationWindow):
             "notify::is-maximized",
             lambda obj, pspec: max_action.set_state(GLib.Variant.new_boolean(obj.props.is_maximized))
         )
+        if data_file is not None:
+            self.open_file(data_file)
 
     def on_maximize_toggle(self, action, value):
         action.set_state(value)
@@ -184,23 +187,23 @@ class TraceyAppWindow(Gtk.ApplicationWindow):
 
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
-            if self.wkspace is None:
-                self.remove(self.bg_image)
-                self.wkspace = Workspace()
-                self.add(self.wkspace)
-            self.wkspace.load_data(dialog.get_filename())
-            self.show_all()
+            self.open_file(dialog.get_filename())
         dialog.destroy()
+
+    def open_file(self, data_file):
+        if self.wkspace is None:
+            self.remove(self.bg_image)
+            self.wkspace = Workspace()
+            self.add(self.wkspace)
+        self.wkspace.load_data(data_file)
+        self.show_all()
 
 
 class TraceyApp(Gtk.Application):
     def __init__(self):
         Gtk.Application.__init__(self,
                                  application_id="org.devsim.tracey",
-                                 flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
-        # Hook-up command line
-        self.add_main_option("test", ord("t"), GLib.OptionFlags.NONE,
-                             GLib.OptionArg.NONE, "Command line test", None)
+                                 flags=Gio.ApplicationFlags.HANDLES_OPEN)
         self.window = None
 
     def do_startup(self):
@@ -227,15 +230,13 @@ class TraceyApp(Gtk.Application):
         self.window.show_all()
         self.window.present()
 
-    def do_command_line(self, command_line):
-        options = command_line.get_options_dict()
+    def do_open(self, files, n_files, hint):
+        if not self.window:
+            for f in files:
+                self.window = TraceyAppWindow(application=self, title=WINDOW_TITLE, data_file=f.get_path())
+        else:
+            self.window.open_file(f.get_path())
 
-        if options.contains("test"):
-            # This is printed on the main instance
-            print("Test argument recieved")
-
-        self.activate()
-        return 0
 
     def on_about(self, action, param):
         about_dialog = Gtk.AboutDialog(transient_for=self.window, modal=True)
