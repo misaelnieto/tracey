@@ -50,8 +50,13 @@ class Workspace(Gtk.Box):
         scroll.add(self.devices_view)
         self.pane.add1(scroll)
         self.pane.add2(self.background)
+        self.pane.set_position(200)
+        self.devices_view.connect('row-activated', self._row_activated_cb)
 
         self.data_map = {}
+
+    def _row_activated_cb(self, tview, path, column):
+        tview.expand_row(path, False)
 
     def load_data(self, filename):
         self.data = DevsimData(filename)
