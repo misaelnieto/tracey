@@ -260,6 +260,6 @@ class TraceyApp(Gtk.Application):
         self.quit()
 
 
-if __name__ == '__main__':
+def main(version):
     app = TraceyApp()
-    app.run(sys.argv)
+    return app.run(sys.argv)

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+    <id>org.devsim.Tracey.desktop</id>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>Apache-2.0</project_license>
+    <summary>Visualize and inspect data exported by the devsim TCAD simulator</summary>
+    <description>
+        <p>Tracey is a tool to visualize and inspect data exported by the
+            <a href="https://www.devsim.org/">devsim</a> TCAD simulator.
+        </p>
+    </description>
+    ​ <launchable type="desktop-id">org.devsim.Tracey.desktop</launchable>
+    ​<screenshots>
+        ​<screenshot type="default">
+            <caption>Main Window</caption>
+            <image>https://raw.githubusercontent.com/misaelnieto/tracey/master/tracey1.png</image>
+        </screenshot>
+        ​<screenshot type="default">
+            <caption>Window with data/caption>
+            <image>https://raw.githubusercontent.com/misaelnieto/tracey/master/tracey2.png</image>
+        </screenshot>
+    </screenshots>
+    <url type="homepage">https://github.com/misaelnieto/tracey</url>
+    <provides>
+​       <binary>tracey</binary>
+​    </provides>
+</component>
