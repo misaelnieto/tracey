@@ -9,33 +9,57 @@ Tracey was developed by Noe Nieto as a by-product of the [GSOC 2018 for devsim](
 
 ## Installation
 
-Tracey uses pygobject and Gtk+3, so you will need to install the library according to the [pygobject installation instructions](https://pygobject.readthedocs.io/en/latest/getting_started.html).
+Tracey's dependencies are pygobject, Gtk+3 and matplotlib.
 
-Clone this repo in your machine.
+### Installing dependecies on Fedora (28)
 
-    git clone git@github.com:misaelnieto/tracey.git
+```bash
+sudo dnf install python3-matplotlib python3-gobject
+```
+
+### Get the code
+
+There is no installation method yet. You have to get a copy of the code and run
+it from there.
+
+Clone the repo in your machine.
+
+```bash
+git clone git@github.com:misaelnieto/tracey.git
+```
 
 Enter the cloned folder
 
-    cd tracey
+```bash
+cd tracey
+```
 
-Run the script
+Run the script like this:
 
-    python3 tracey.py
+```bash
+    ./tracey
+```
+
+Orby using python directly
+
+```bash
+python3 tracey
+```
+
 
 ## Usage
 
 Click con the open button and select the data file. Optionally you can especify the path to the file in the command line like this:
 
-    python3 tracey.py path/to/devism_datafile.dat
-
+```bash
+tracey.py path/to/devism_datafile.dat
+```
 
 ## Status
 
-
+As of now, tracey can list the regions, nodes, node solutions and edge solutions and the data is only shown as a datagrid.
 ![Tracey ready to be used](tracey2.png "Tracey window with file open from the command line")
 
-As of now, tracey can list the regions, nodes, node solutions and edge solutions and the data is only shown as a datagrid.
 
 ## Further work
 
