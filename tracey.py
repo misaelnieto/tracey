@@ -9,12 +9,14 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import  Gio, GLib, Gtk, GdkPixbuf
 from parser import DevsimData
 
+import plotus
 
 WINDOW_TITLE = 'Tracey - Devsim structure viewer'
 TRACEY_LOGO = 'tracey.svg'
 COLUMN_TITLES = 'xyz' + ascii_lowercase[:-3][::-1]
 
 HERE = abspath(joinpath(dirname(__file__)))
+
 
 def resource(filename):
     return joinpath(HERE, filename)
@@ -68,22 +70,30 @@ class Workspace(Gtk.Box):
             # Do we need columns?
             if type(datum[0]) is list:
                 n_columns = len(datum[0])
+
+                # prepare pane
+                self.pane.remove(self.pane.get_child2())
+                plotbox = Gtk.Paned(orientation=Gtk.Orientation.VERTICAL)
+                self.pane.add2(plotbox)
+
+                # Plot
+                plt = plotus.plot_1D_mesh(datum)
+                plt.props.height_request = 400
+                plotbox.add1(plt)
+
                 # Data Grid
                 model = Gtk.ListStore(*[str] * (n_columns))
-                view = Gtk.TreeView(model)
+                for r in datum:
+                    model.append([str(c) for c in r])
+                tview = Gtk.TreeView(model)
                 for n in range(n_columns):
                     renderer = Gtk.CellRendererText()
                     col = Gtk.TreeViewColumn(str, renderer, text=n)
                     col.set_title(COLUMN_TITLES[n])
-                    view.append_column(col)
-                self.pane.remove(self.pane.get_child2())
+                    tview.append_column(col)
                 scroll = Gtk.ScrolledWindow()
-                scroll.add(view)
-                self.pane.add2(scroll)
-
-                # populate model
-                for r in datum:
-                    model.append([str(c) for c in r])
+                scroll.add(tview)
+                plotbox.add2(scroll)
             else:
                 model = Gtk.ListStore(str)
                 view = Gtk.TreeView(model)
@@ -241,7 +251,6 @@ class TraceyApp(Gtk.Application):
                 self.window = TraceyAppWindow(application=self, title=WINDOW_TITLE, data_file=f.get_path())
         else:
             self.window.open_file(f.get_path())
-
 
     def on_about(self, action, param):
         about_dialog = Gtk.AboutDialog(transient_for=self.window, modal=True)
